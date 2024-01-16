@@ -1,5 +1,9 @@
 #include "main.hpp"
 
+DisplayManager displayManager;
+
+ComManager comManager("ESP32", displayManager);
+ComManager* ComManager::instance = nullptr;
 
 StepperController stepperX(
   DRV8825_STP_PIN_1,
@@ -7,7 +11,8 @@ StepperController stepperX(
   STEPPER_SLP_PIN,
   DRV8825_EN_PIN,
   MOTOR_SPEED,
-  MOTOR_ACCEL
+  MOTOR_ACCEL,
+  stepsPerDegree
 );
 StepperController stepperY(
   DRV8825_STP_PIN_2,
@@ -15,20 +20,71 @@ StepperController stepperY(
   STEPPER_SLP_PIN,
   DRV8825_EN_PIN,
   MOTOR_SPEED,
-  MOTOR_ACCEL
+  MOTOR_ACCEL,
+  stepsPerDegree
 );
-MotionController motionController(stepperX, stepperY, stepsPerDegree);
+MotionController motionController(stepperX, stepperY, displayManager);
 
+bool microstepToggleState = HIGH;
+
+void checkMicroStepToggle();
+void setupButtons();
 
 void setup() {
+  #if LOG == 1
   Serial.begin(9600);
-  delay(1000);
+  while (!Serial);
+  #endif
 
-  Serial.println("Initializing motion controller");
+  // Initialize Display Manager
+  displayManager.setup();
+  delay(500);
+
+  setupButtons();
+
+  // Initialize Communication Manager
+  comManager.setup();
+  comManager.bindAction(MSG_UP, [&]() { motionController.moveUp(); });
+  comManager.bindAction(MSG_DOWN, [&]() { motionController.moveDown(); });
+  comManager.bindAction(MSG_LEFT, [&]() { motionController.moveLeft(); });
+  comManager.bindAction(MSG_RIGHT, [&]() { motionController.moveRight(); });
+  comManager.bindAction(MSG_STOP, [&]() { motionController.stopImmediately(); });
+  comManager.bindAction(MSG_BTN1, [&]() { motionController.increaseMotorSpeed(); });
+  comManager.bindAction(MSG_BTN2, [&]() { motionController.decreaseMotorSpeed(); });
+  
+  // Initialize motion controller
+  displayManager.displayStatus("Initializing motion controller");
+  LOG_PRINTLN("Initializing motion controller");
   motionController.begin();
-  Serial.println("Motion controller initialized");
+  delay(500);
+  displayManager.displayStatus("Motion controller initialized");
+  LOG_PRINTLN("Motion controller initialized");
+
+  checkMicroStepToggle();
+
+  motionController.testMotion();
+}
+
+void checkMicroStepToggle() {
+  int state = digitalRead(MICROSTEP_TOGGLE_BTN);
+  if (state != microstepToggleState) {
+    microstepToggleState = state;
+    if (state == LOW) {
+      motionController.setStepsPerDegree(stepsPerDegree / 16);
+    } else {
+      motionController.setStepsPerDegree(stepsPerDegree);
+    }
+  }
+}
+
+void setupButtons() {
+  pinMode(BUTTON_PIN_1, INPUT_PULLUP);
+  pinMode(BUTTON_PIN_2, INPUT_PULLUP);
+  pinMode(MICROSTEP_TOGGLE_BTN, INPUT_PULLUP);
 }
 
 void loop() {
-  
+  checkMicroStepToggle();
+  motionController.processMovement();
+  motionController.sleepIfIdle();
 }

@@ -9,7 +9,6 @@ public:
     void setup();
     void clearDisplay();
     void displayStatus(const char* action);
-    void displayIP(const IPAddress &ip);
     void resetUpdateTimer();
     
 private:

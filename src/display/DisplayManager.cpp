@@ -30,15 +30,6 @@ void DisplayManager::displayStatus(const char* action) {
     display.display();
 }
 
-void DisplayManager::displayIP(const IPAddress &ip) {
-    display.clearDisplay();
-    display.setTextSize(1);
-    display.setTextColor(SSD1306_WHITE);
-    display.setCursor(0, 0);
-    display.println(ip.toString());
-    display.display();
-}
-
 void DisplayManager::resetUpdateTimer() {
     // lastDisplayUpdate = millis(); // if you have any functionality related to display update timing
 }

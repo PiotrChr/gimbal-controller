@@ -1,4 +1,5 @@
 #include "config.hpp"
+#include "communication/ComManager.cpp"
 #include "display/DisplayManager.hpp"
 #include "eeprom/EEpromManager.hpp"
 #include "motion/MotionController.hpp"
@@ -26,9 +27,14 @@
 #define BUTTON_PIN_1 32
 #define BUTTON_PIN_2 33
 
+#define MICROSTEP_TOGGLE_BTN 27
 // Define motor parameters
-#define MOTOR_SPEED 500.0 
-#define MOTOR_ACCEL 5000.0 
+
+#define MOTOR_SPEED 600.0 
+#define MOTOR_ACCEL 2000.0 
 
 #define GEAR_RATIO 6.0
-constexpr float stepsPerDegree = (200 / 360.0) * GEAR_RATIO;
+#define MICROSTEPS 16.0
+constexpr float stepsPerDegree = (200 / 360.0) * GEAR_RATIO * MICROSTEPS;
+
+#define COM_CHANNEL 6
