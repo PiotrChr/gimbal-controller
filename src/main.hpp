@@ -4,6 +4,8 @@
 #include "eeprom/EEpromManager.hpp"
 #include "motion/MotionController.hpp"
 #include "task/TaskManager.hpp"
+#include "sdProgram/SDManager.hpp"
+#include "sdProgram/SDProgramManager.hpp"
 
 // Define pins for the stepper motor
 #define STEPPER_EN_PIN 13
@@ -28,13 +30,5 @@
 #define BUTTON_PIN_2 33
 
 #define MICROSTEP_TOGGLE_BTN 27
-// Define motor parameters
-
-#define MOTOR_SPEED 600.0 
-#define MOTOR_ACCEL 2000.0 
-
-#define GEAR_RATIO 6.0
-#define MICROSTEPS 16.0
-constexpr float stepsPerDegree = (200 / 360.0) * GEAR_RATIO * MICROSTEPS;
 
 #define COM_CHANNEL 6

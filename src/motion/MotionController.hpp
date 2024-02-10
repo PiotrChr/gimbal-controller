@@ -25,6 +25,9 @@ public:
     void increaseMotorSpeed();
     void decreaseMotorSpeed();
 
+    void setSpeed(int speed);
+    int getSpeed();
+
     void processMovement();
     void sleepIfIdle();
     void testMotion();

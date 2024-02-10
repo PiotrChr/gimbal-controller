@@ -25,6 +25,9 @@ StepperController stepperY(
 );
 MotionController motionController(stepperX, stepperY, displayManager);
 
+SDManager sdManager;
+SDProgramManager sdProgramManager(sdManager, motionController, displayManager);
+
 bool microstepToggleState = HIGH;
 
 void checkMicroStepToggle();

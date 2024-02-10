@@ -19,6 +19,15 @@ void StepperController::setStepsPerDegree(float stepsPerDegree) {
     this->stepsPerDegree = stepsPerDegree;
 }
 
+float StepperController::getMotorSpeed() {
+    return currentSpeed;
+}
+
+void StepperController::setMotorSpeed(float motorSpeed) {
+    this->currentSpeed = motorSpeed;
+    stepper.setSpeedInStepsPerSecond(motorSpeed);
+}
+
 void StepperController::startMovingToAngle(float angle) {
     int steps = static_cast<int>(angle * this->stepsPerDegree);
     stepper.setTargetPositionInSteps(stepper.getCurrentPositionInSteps() + steps);

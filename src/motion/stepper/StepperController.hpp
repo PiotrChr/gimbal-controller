@@ -24,6 +24,9 @@ public:
 
     void stopImmediately();
 
+    float getMotorSpeed();
+    void setMotorSpeed(float motorSpeed);
+
     void enable();
     void disable();
     void sleep();
