@@ -1,11 +1,19 @@
 #include "SDManager.hpp"
 
-SDManager::SDManager() : isSDInitialized(false) {
+SDManager::SDManager(int cardReaderPin) : isSDInitialized(false), cardReaderPin(cardReaderPin), spi(new SPIClass(HSPI)) {
     initializeSD();
 }
 
+SDManager::~SDManager() {
+    delete spi;
+}
+
 void SDManager::initializeSD() {
-    if (!SD.begin(SD_CARD_READER_PIN)) {
+    if (isSDInitialized) return;
+
+    spi->begin(14, 12, 13, cardReaderPin);
+
+    if (!SD.begin(cardReaderPin, *spi)) {
         LOG_PRINTLN("Card Mount Failed");
         isSDInitialized = false;
         return;
@@ -47,23 +55,3 @@ bool SDManager::fileExists(const char *path) {
     return SD.exists(path);
 }
 
-template<typename Callback>
-void SDManager::readFileLineByLine(const char* path, Callback callback) {
-        if (!isSDInitialized) {
-            initializeSD();
-        }
-
-        File file = SD.open(path);
-        if (!file) {
-            Serial.println("Failed to open file for reading");
-            return;
-        }
-
-        while (file.available()) {
-            String line = file.readStringUntil('\n');
-            line.trim(); // Remove any trailing newline characters
-            callback(line); // Call the callback function with the line as argument
-        }
-
-        file.close();
-    }

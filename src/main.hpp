@@ -1,5 +1,5 @@
 #include "config.hpp"
-#include "communication/ComManager.cpp"
+#include "communication/ComManager.hpp"
 #include "display/DisplayManager.hpp"
 #include "eeprom/EEpromManager.hpp"
 #include "motion/MotionController.hpp"
@@ -28,6 +28,10 @@
 // Define pins for buttons
 #define BUTTON_PIN_1 32
 #define BUTTON_PIN_2 33
+
+// SD
+#define SD_CS_PIN 15
+
 
 #define MICROSTEP_TOGGLE_BTN 27
 

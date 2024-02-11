@@ -17,6 +17,15 @@ void MotionController::moveToAngle(float angleX, float angleY) {
     }
 }
 
+int MotionController::getSpeed() {
+    return int(xController.getMotorSpeed());
+}
+
+void MotionController::setSpeed(int speed) {    
+    xController.setMotorSpeed(float(speed));
+    yController.setMotorSpeed(float(speed));
+}
+
 void MotionController::moveUp() {
     wakeUp();
     displayManager.displayStatus("Moving up");

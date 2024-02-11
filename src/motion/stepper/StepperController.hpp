@@ -1,3 +1,5 @@
+#pragma once
+
 #include "ESP_FlexyStepper.h"
 #include <Arduino.h>
 #include "../../config.hpp"

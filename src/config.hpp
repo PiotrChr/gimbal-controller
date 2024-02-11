@@ -1,6 +1,6 @@
 #pragma once
 
-#define LOG 0
+#define LOG 1
 
 #include <Arduino.h>
 #if LOG == 1

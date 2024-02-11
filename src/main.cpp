@@ -25,7 +25,7 @@ StepperController stepperY(
 );
 MotionController motionController(stepperX, stepperY, displayManager);
 
-SDManager sdManager;
+SDManager sdManager(SD_CS_PIN);
 SDProgramManager sdProgramManager(sdManager, motionController, displayManager);
 
 bool microstepToggleState = HIGH;
@@ -38,6 +38,9 @@ void setup() {
   Serial.begin(9600);
   while (!Serial);
   #endif
+
+  sdManager.initializeSD();
+  delay(100);
 
   // Initialize Display Manager
   displayManager.setup();
@@ -65,7 +68,8 @@ void setup() {
 
   checkMicroStepToggle();
 
-  motionController.testMotion();
+  // motionController.testMotion();
+  sdProgramManager.executeProgram();
 }
 
 void checkMicroStepToggle() {

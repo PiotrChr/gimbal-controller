@@ -3,22 +3,43 @@
 #include <Arduino.h>
 #include "FS.h"
 #include "SD.h"
+#include <SPI.h>
 #include "../config.hpp"
 
 class SDManager {
 private:
-    const uint8_t SD_CARD_READER_PIN = 5;
+    const uint8_t cardReaderPin;
     bool isSDInitialized;
-    
-    void initializeSD();
+    SPIClass *spi;
     bool readFile(fs::FS &fs, const char *path, String &contents);
 public:
-    SDManager();
+    SDManager(int cardReaderPin);
+    ~SDManager();
+
+    void initializeSD();
 
     bool readFileContents(const char* path, String &contents);
+    
+    bool fileExists(const char* path);
 
     template<typename Callback>
-    void readFileLineByLine(const char* path, Callback callback);
+    void readFileLineByLine(const char* path, Callback callback) {
+        if (!isSDInitialized) {
+            initializeSD();
+        }
 
-    bool fileExists(const char* path);
+        File file = SD.open(path);
+        if (!file) {
+            Serial.println("Failed to open file for reading");
+            return;
+        }
+
+        while (file.available()) {
+            String line = file.readStringUntil('\n');
+            line.trim(); // Remove any trailing newline characters
+            callback(line); // Call the callback function with the line as argument
+        }
+
+        file.close();
+    }
 };

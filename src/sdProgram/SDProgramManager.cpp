@@ -4,12 +4,16 @@ SDProgramManager::SDProgramManager(SDManager& sdManager, MotionController& motio
     : sdManager(sdManager), motionController(motionController), displayManager(displayManager) {}
 
 void SDProgramManager::executeProgram() {
+    sdManager.initializeSD();
+
     if (!sdManager.fileExists(PROGRAM_FILE_PATH)) {
         LOG_PRINTLN("Program file not found");
         displayManager.displayStatus("Program file not found");
         delay(2000);
         return;
     }
+
+    LOG_PRINTLN("Program file found");
 
     sdManager.readFileLineByLine(PROGRAM_FILE_PATH, [this](const String& line) {
         if (line.length() > 0) { // Ignore empty lines
@@ -47,10 +51,15 @@ void SDProgramManager::handleMovementCommand(const String& command) {
     float y = parseCoordinate(command.substring(yIndex + 1, sIndex));
     float speed = parseSpeed(command.substring(sIndex + 1));
 
+    if (speed != motionController.getSpeed()) {
+        LOG_PRINTLN("Speed changed");
+        motionController.setSpeed(speed);
+    }
+
     if (mode == PROG_MOVE_ABSOLUTE) {
-        motionController.moveToAngle(x, y); // Add speed handling
+        // TO DO
     } else if (mode == PROG_MOVE_RELATIVE) {
-        // TODO
+        motionController.moveToAngle(x, y);
     }
 }
 

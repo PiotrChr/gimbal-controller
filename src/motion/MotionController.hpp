@@ -1,3 +1,5 @@
+#pragma once
+
 #include "stepper/StepperController.hpp"
 #include "../display/DisplayManager.hpp"
 #include "../config.hpp"

@@ -42,23 +42,3 @@ void EEPROMManager::readString(int addrOffset, char *output, size_t maxLen)
     }
     output[newStrLen] = '\0';
 }
-
-void EEPROMManager::saveWifiCredentials(const char *ssid, const char *password)
-{
-    LOG_PRINTLN("Saving WiFi credentials to EEPROM");
-    LOG_PRINTLN("SSID: ");
-    LOG_PRINTLN(ssid);
-    LOG_PRINTLN("PASSWORD: ");
-    LOG_PRINTLN(password);
-
-    writeString(SSID_EEPROM_INDEX, ssid);
-    writeString(PASSWORD_EEPROM_INDEX, password);
-}
-
-void EEPROMManager::restoreWifiCredentials(char *ssid, size_t ssidLen, char *password, size_t passwordLen)
-{
-    LOG_PRINTLN("Restoring WiFi credentials from EEPROM");  
-    
-    readString(SSID_EEPROM_INDEX, ssid, ssidLen);
-    readString(PASSWORD_EEPROM_INDEX, password, passwordLen);
-}
